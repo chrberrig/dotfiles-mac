@@ -1,0 +1,51 @@
+#!/bin/bash
+
+[ -z "$1" ] && echo "Give option for outputstyle and exsisting directory as root for crawl." && exit
+# Default is relative path.
+if [ $# -lt 2 ]; then
+	if [ -d "$1" ]; then
+		find $(echo "$1" | sed "s/\/$//") -type f # files w. relative path
+	else echo "A valid directory is needed as an argument."
+	fi
+fi
+# if [ -d "$2" ]; then
+while getopts ":ha:f:r:" opt; do
+	# [ -z "$OPTARG" ] && echo "Give directory as root for crawl." && exit
+	case ${opt} in
+		h)
+			echo "[h]: help"
+			echo ""
+			echo "[a]: outputs absolute path of all files (recursive) in given directory arg."
+			echo "[f]: outputs all files (recursive) in given directory arg., without path relation"
+			echo "[r]: outputs relative path of all files (recursive) in given directory arg."
+			
+		;;
+		f) if [ -d "$OPTARG" ]; then
+			du $(echo "$OPTARG" | sed "s/\/$//") | cut -f2 | xargs ls -p | grep -v / | sed "/.*:/d ; /^$/d" || exit 1 # only files
+		else echo "A valid directory is needed as an argument"
+		fi
+		;;
+		r) if [ -d "$OPTARG" ]; then
+			find $(echo "$OPTARG" | sed "s/\/$//") -type f # files w. relative path
+		else echo "A valid directory is needed as an argument"
+		fi
+		;;
+		a) if [ -d "$OPTARG" ]; then 
+			find $(echo "$PWD/$OPTARG" | sed "s/\/$//") -type f # files w. absolute path
+		else echo "A valid directory is needed as an argument"
+		fi
+		;;
+		:) echo "Usage: crawl [-afr] [directory] ; an argument for -$OPTARG is needed" 1>&2; exit 1
+		;;
+		\?) echo "Usage: crawl [-afr] [directory] ; invalid option, -$OPTARG does not exist for crawl" 1>&2; exit 1
+		;;
+	esac
+	shift $((OPTIND -1))
+done
+
+
+#	du $(echo "$1" | sed "s/\/$//") | cut -f2 | xargs ls -p | grep -v / | sed "/.*:/d ; /^$/d" || exit 1 # only files
+# 	find $(echo "$1" | sed "s/\/$//") -type f # files w. relative path
+#	find $(echo "$PWD/$1" | sed "s/\/$//") -type f # files w. absolute path
+#	find "$(echo "$PWD/$1" | sed "s/\/$//")" -type f | sed "s%$(echo $PWD | sed "s,\/,\\\/,g")/%%g" || exit 1 # alternative to files w. relative path
+

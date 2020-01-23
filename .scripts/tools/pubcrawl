@@ -1,0 +1,10 @@
+#!usr/bin/bash
+
+if [ $# -lt 1 ]; then
+	echo "Need directory to crawl."
+fi
+
+#crawl, through directoriy (recursive), extract identifiers and identifier type (arXiv, DOI, ISBN), make bib. entry and link document to this entry via pubs
+
+crawl $1 | extract_bibid | xargs $2 
+

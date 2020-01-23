@@ -1,0 +1,70 @@
+#!/bin/bash
+
+has_opt=false
+while getopts ":ha:b:c:dln:" opt; do
+	has_opt=true
+	case ${opt} in
+		h)
+			echo "[h]: Help. " 
+			echo "[a]: Create new Article template. " 
+			echo "[b]: Create new Beamer template. " 
+			echo "[c]: Clean up current working directory for for all generated files except the compiled .pdf file. "
+			echo "[d]: Create directiries 'tex' and 'fig' w.o. without creating new files. " 
+			echo "[n]: Create new (named) file w.o. pream. " 
+		;;
+		a) 
+			filename="$(echo "${OPTARG}" | cut -f 1 -d ".")" 
+			if [ ! -f "${filename}.tex" ]; then
+				echo "Making new Article templatete. "
+				cp $LATEX/pream_article.tex "${filename}.tex"
+			else
+				echo "File already exists. No new template created."
+			fi
+		;;
+		b) 
+			filename="$(echo "${OPTARG}" | cut -f 1 -d ".")" 
+			if [ ! -f "${filename}.tex" ]; then
+				echo "Making new Beamer templatete. "
+				cp $LATEX/pream_beamer.tex "${filename}.tex"
+			else
+				echo "File already exists. No new template created."
+			fi
+		;;
+		c) 
+			filename="$(echo "${OPTARG}" | cut -f 1 -d ".")" 
+			# echo "${filename}"
+			# if [ -f "${filename}.*" ]; then
+			find . -name "${filename}.*" -not -name "*.pdf" -not -name "*.tex" -type f -depth 1 # | xargs rm -i
+			# else
+			# 	echo "No files identified with input "${filename}" to clean up."
+			# fi
+
+		;;
+		d)
+			mkdir tex
+			mkdir fig
+		;;
+		l) find . -name "*.tex" -type f 
+		;;
+		n) touch "${OPTARG}.tex" 
+		;;
+		:) echo "Usage: sutex [-fnd] [filename]; An argument for -${OPTARG} is needed. " 1>&2; exit 1
+		;;
+		\?) echo "Usage: sutex [-fnd] [filename]; Invalid option, -${OPTARG} does not exist. " 1>&2; exit 1
+		;;
+	esac
+done
+shift $((OPTIND -1))
+
+# copy template and pream. from $LATEX:
+if [ "$has_opt" = false ]; then
+	filename="$(echo "$1" | cut -f 1 -d ".")" 
+	if [ ! -f "${filename}.tex" ]; then
+		echo "Making new Article templatete. "
+		cp $LATEX/pream_article.tex "${filename}.tex"
+	else
+		echo "File already exists. No new template created."
+	fi
+	# vim "${filename}.tex"
+fi
+

@@ -1,0 +1,75 @@
+#!/bin/sh
+[ -z "$1" ] && echo "Give either a pdf file or a DOI/ArXivID/ISBN as an argument." && exit
+[ ! -f "$1" ] && echo "Give either a valid pdf file or a DOI/ArXivID/ISBN as an argument." && exit
+
+IDLIST=(
+	doi
+	isbn
+	arxiv
+)
+
+if [ -f "$1" ]; then
+	for i in "${IDLIST[@]}"; do
+		# Try to get Identifier and ID.type from pdfinfo or pdftotext output.
+		id="$(pdfinfo "$1" | ggrep -io -P "$i:(\s)?[^\s]*")" ||	
+		id="$(pdftotext "$1" 2>/dev/null - | ggrep -io -P "$i:(\s)?[^\s]*" -m 1)" || echo "no ${i} found" 
+		type="$i"
+		echo "$id"
+		if [ ! -z $id ]; then 
+			break
+		fi
+	done
+fi
+
+if [ -z $id ]; then
+	echo "no ID found" && exit 1
+fi
+
+if [ "$type" == "doi" ]; then
+	doi="$(echo "$id" | ggrep -io -P "(?<=doi:)[^\s]*" | sed "s/ //g")"
+	echo "-D $doi"
+elif [ "$type" == "isbn" ]; then
+	isbn="$(echo "$id" | ggrep -io -P "(?<=isbn:)[^\s]*" | sed "s/ //g")"
+	echo "-I $isbn"
+elif [ "$type" == "arxiv" ]; then
+	arxiv="$(echo "$id" | ggrep -io -P "(?<=arxiv:)[^\s]*" | sed "s/ //g")"
+	echo "-X $arxiv"
+fi
+
+
+# move some of functionality inside big loop
+
+
+# if [ -f "$1" ]; then
+# 	# Try to get DOI from pdfinfo or pdftotext output.
+# 	doi="$(pdfinfo "$1" | ggrep -io -P "(?<=doi:)[^\s]*")" ||	
+# 	doi="$(pdftotext "$1" 2>/dev/null - | ggrep -io -P "(?<=doi:).*\s" -m 1)" ||
+# 	isbn="$(pdfinfo "$1" | ggrep -io -P "(?<=isbn:).*\s")" ||
+# 	isbn="$(pdftotext "$1" 2>/dev/null - | ggrep -io -P "(?<=isbn:).*\s" -m 1)" ||
+# 	arxiv="$(pdfinfo "$1" | ggrep -io -P "(?<=arxiv:).*\s")" ||
+# 	arxiv="$(pdftotext "$1" 2>/dev/null - | ggrep -io -P "(?<=arxiv:).*\s" -m 1)" || echo "No identifier found in attempt" && exit 1
+# 	# echo "no identifier found" && exit 1
+# 	echo "$doi" || echo "$isbn" || echo "$arxiv" || echo "No identifier found."
+# fi
+# # echo "Before 2. condition"
+# if [ ! -z $doi ]; then
+# 	echo "doi is found"
+# 	doi_nospace="$(echo "$doi" | sed "s/ //g")" 
+# 	echo "-D $doi_nospace"
+# elif [ ! -z $isbn ]; then
+# 	echo "isbn is found"
+# 	isbn_nospace="$(echo "$isbn" | sed "s/ //g")" ||
+# 	echo "-I $isbn_nospace"
+# elif [ ! -z $arxiv ]; then
+# 	echo "arxiv is found"
+# 	arxiv_nospace="$(echo "$arxiv" | sed "s/ //g")" ||
+# 	echo "-X $arxiv_nospace"
+# fi
+# # echo "after 2. condition"
+# 
+# 
+# # (?<=doi:|isbn:|arxiv:)(\s)?[^\s]*
+# 
+# # "([aA]r[xX]iv\:.*?)\ "
+# # [ -z ${var+x} ]
+# # Check crossref.org for the bib citation.

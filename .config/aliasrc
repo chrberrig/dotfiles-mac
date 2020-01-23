@@ -1,0 +1,5 @@
+#!/bin/sh
+alias phd="cd ; cd Documents/Uni/DTU/PhD/ ; ls -a" 
+# alias grep="ggrep"
+alias mutt="neomutt"
+alias dfmgr='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'

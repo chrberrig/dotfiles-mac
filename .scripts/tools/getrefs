@@ -1,0 +1,31 @@
+#!/bin/bash
+
+[ -z "$1" ] && echo "Give directory containing references to be added to bibliography" && exit
+
+if [ -d "$1" ]; then
+	# rere "s/[ ,_]*/_/g" "$1" # try this: 
+	rere "s/(,| |_|\.(?!pdf$))+/_/g" "$1"
+	# echo "heya"
+	echo "$(crawl "$1" | grep ".*\.pdf" -)" | while read line; do 
+		# e_line="$(echo "$line" | sed "s/[ ,]/\\\\&/g")" # correct w. \ before special characters...
+		# eval "$e_line"
+		echo "$line"
+		getbib "$line" # getbib does not like special characters w.o. \ in front...
+		err_val="$?"
+		echo "$err_val"
+		if [ "$err_val" = 1 ]; then
+			echo "Hep!"
+			grep "$line" no_refs.txt && grep -v "$line" no_refs.txt > no_refs.txt || echo "$line" >> no_refs.txt
+		elif [ "$err_val" = 0 ]; then 
+			echo "hey"
+			doi="$(pdfinfo "$line" | grep -io "doi:.*")" ||
+			doi="$(pdftotext "$line" 2>/dev/null - | grep -io "doi:.*" -m 1)" # || exit 1
+			check="$(echo "$doi" | sed "s/doi\:[ ]*//g")" 
+			# echo "$check"
+			grep "$check" "$BIB" || eval "$e_line" >> "$BIB"
+		fi
+	done 
+else
+	echo "No such directory in this location."
+fi
+
