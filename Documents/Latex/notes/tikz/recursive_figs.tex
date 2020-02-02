@@ -1,0 +1,240 @@
+\documentclass[a4paper,twoside]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{natbib}            % for bibtex
+\usepackage[style=phys]{biblatex}                       % for biblatex
+\bibliography{/Users/chrberrig/Documents/LaTeX/bib.bib} % for biblatex
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{physics}
+%\usepackage[danish]{babel} 
+\usepackage{graphicx}
+%\usepackage{subcaption}
+%\usepackage[rmargin=2.7cm,lmargin=2.7cm,bmargin=2.5cm,tmargin=2.5cm]{geometry}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{lindenmayersystems}
+%\usepackage{minted}
+%\usepackage{listings}
+%\usepackage{tkz-euclide} %for euclidian constructions in Tikz. 
+%\usepackage{pgfplots}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\newcommand{\mtx}[1]{\underline{\underline{\textbf{#1}}}}
+\newcommand{\diff}[2]{\dfrac{d #1}{d #2}}
+\newcommand{\pdiff}[2]{\dfrac{\partial #1}{\partial #2}}
+
+\title{Recursive figures w. tikz (using lindenmeyer systems)}
+\author{Christian Berrig}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Sierpinski Triangle}
+\def\trianglewidth{2cm}%
+\pgfdeclarelindenmayersystem{Sierpinski triangle}{
+    \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemdrawforward}
+    \rule{X -> X-Y+X+Y-X}
+    \rule{Y -> YY}
+}%
+\foreach \level in {0,...,5}{%
+\tikzset{
+    l-system={step=\trianglewidth/(2^\level), order=\level, angle=-120}
+}%
+\begin{tikzpicture}
+    \fill [black] (0,0) -- ++(0:\trianglewidth) -- ++(120:\trianglewidth) -- cycle;
+    \draw [draw=none] (0,0) l-system
+    [l-system={Sierpinski triangle, axiom=X},fill=white];
+\end{tikzpicture}
+}%
+
+\begin{verbatim}
+\def\trianglewidth{2cm}%
+\pgfdeclarelindenmayersystem{Sierpinski triangle}{
+    \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemdrawforward}
+    \rule{X -> X-Y+X+Y-X}
+    \rule{Y -> YY}
+}%
+\foreach \level in {0,...,5}{%
+\tikzset{
+    l-system={step=\trianglewidth/(2^\level), order=\level, angle=-120}
+}%
+\begin{tikzpicture}
+    \fill [black] (0,0) -- ++(0:\trianglewidth) -- ++(120:\trianglewidth) -- cycle;
+    \draw [draw=none] (0,0) l-system
+    [l-system={Sierpinski triangle, axiom=X},fill=white];
+\end{tikzpicture}
+}%
+\end{verbatim}
+
+%\begin{minted}[language=tex]
+%\def\trianglewidth{2cm}%
+%\pgfdeclarelindenmayersystem{Sierpinski triangle}{
+%    \symbol{X}{\pgflsystemdrawforward}
+%    \symbol{Y}{\pgflsystemdrawforward}
+%    \rule{X -> X-Y+X+Y-X}
+%    \rule{Y -> YY}
+%}%
+%\foreach \level in {0,...,5}{%
+%\tikzset{
+%    l-system={step=\trianglewidth/(2^\level), order=\level, angle=-120}
+%}%
+%\begin{tikzpicture}
+%    \fill [black] (0,0) -- ++(0:\trianglewidth) -- ++(120:\trianglewidth) -- cycle;
+%    \draw [draw=none] (0,0) l-system
+%    [l-system={Sierpinski triangle, axiom=X},fill=white];
+%\end{tikzpicture}
+%}%
+%\end{minted}
+
+\section{Sierpinski Triangle2}
+\def\trianglewidth{2cm}%
+\pgfdeclarelindenmayersystem{Sierpinski triangle2}{
+    \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemdrawforward}
+    \rule{X -> Y-X-Y}
+    \rule{Y -> X+Y+X}
+}%
+\foreach \level in {0,...,5}{%
+\begin{tikzpicture}
+    \draw [black]
+    [l-system={Sierpinski triangle2, step=\trianglewidth/(2^\level), order=\level, angle=60, axiom=X}]
+    lindenmayer system;
+\end{tikzpicture}
+}%
+
+\begin{verbatim}
+\def\trianglewidth{2cm}%
+\pgfdeclarelindenmayersystem{Sierpinski triangle}{
+    \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemdrawforward}
+    \rule{X -> X-Y+X+Y-X}
+    \rule{Y -> YY}
+}%
+\foreach \level in {0,...,5}{%
+\tikzset{
+    l-system={step=\trianglewidth/(2^\level), order=\level, angle=-120}
+}%
+\begin{tikzpicture}
+    \fill [black] (0,0) -- ++(0:\trianglewidth) -- ++(120:\trianglewidth) -- cycle;
+    \draw [draw=none] (0,0) l-system
+    [l-system={Sierpinski triangle, axiom=X},fill=white];
+\end{tikzpicture}
+}%
+\end{verbatim}
+
+
+\section{Dragon curve}
+\pgfdeclarelindenmayersystem{Dragon curve}{
+\symbol{X}{\pgflsystemdrawforward}
+\symbol{+}{\pgflsystemturnright}% Explicitly define + and - symbols.
+\symbol{-}{\pgflsystemturnleft}
+\rule{A-> A+BX+}
+\rule{B-> -XA−B}
+}
+\foreach \level in {1,...,2}{
+\begin{tikzpicture}
+\draw[l-system={Dragon curve, step=2cm/2^\level, axiom=XA, order=\level, angle=90}]
+l-system;
+\end{tikzpicture}
+}
+
+\pgfdeclarelindenmayersystem{Hilbert curve}{
+	\symbol{X}{\pgflsystemdrawforward}
+	\symbol{+}{\pgflsystemturnright}% Explicitly define + and - symbols.
+	\symbol{-}{\pgflsystemturnleft}
+	\rule{A-> +BX-AXA-XB+}
+	\rule{B-> -AX+BXB+XA-}
+}
+\foreach \level in {1,...,7}{%
+\begin{tikzpicture}
+\draw[l-system={Hilbert curve, step=4cm/2^\level, axiom=A, order=\level, angle=90}]
+l-system;
+\end{tikzpicture}
+}
+
+\section{Sierpinski Hexagon}
+\def\hexagwidth{2cm}%
+\pgfdeclarelindenmayersystem{Sierpinski hexagon}{
+  \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemmoveforward\pgflsystemmoveforward\pgflsystemmoveforward}
+    \rule{X -> X+X+X+X+X+X+Y}
+    \rule{Y -> YYY}
+}%
+\foreach \level in {1,...,4}{%
+\tikzset{
+    l-system={step=\hexagwidth/3^\level, order=\level, angle=60}
+}%
+\begin{tikzpicture}
+  \fill (0,0) l-system [l-system={Sierpinski hexagon, axiom=X}] ;
+\end{tikzpicture}
+}%
+
+\begin{verbatim}
+\def\hexagwidth{2cm}%
+\pgfdeclarelindenmayersystem{Sierpinski hexagon}{
+  \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemmoveforward\pgflsystemmoveforward\pgflsystemmoveforward}
+    \rule{X -> X+X+X+X+X+X+Y}
+    \rule{Y -> YYY}
+}%
+\foreach \level in {1,...,4}{%
+\tikzset{
+    l-system={step=\hexagwidth/3^\level, order=\level, angle=60}
+}%
+\begin{tikzpicture}
+  \fill (0,0) l-system [l-system={Sierpinski hexagon, axiom=X}] ;
+\end{tikzpicture}
+}%
+\end{verbatim}
+
+
+\section{Iterated Triangle}
+\def\trianglewidth{2cm}%
+\pgfdeclarelindenmayersystem{Iterated triangle}{
+    \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemdrawforward}
+    \rule{X -> Y-Y+X+Y-Y}
+    \rule{Y -> YY}
+}%
+\foreach \level in {0,...,5}{%
+\tikzset{
+    l-system={step=\trianglewidth/(2^\level), order=\level, angle=-120}
+}%
+\begin{tikzpicture}
+    \fill [black] (0,0) -- ++(0:\trianglewidth) -- ++(120:\trianglewidth) -- cycle;
+    \draw [draw=none] (0,0) l-system
+    [l-system={Iterated triangle, axiom=X},fill=white];
+\end{tikzpicture}
+}%
+
+\begin{verbatim}
+\def\trianglewidth{2cm}%
+\pgfdeclarelindenmayersystem{Iterated triangle}{
+    \symbol{X}{\pgflsystemdrawforward}
+    \symbol{Y}{\pgflsystemdrawforward}
+    \rule{X -> Y-Y+X+Y-Y}
+    \rule{Y -> YY}
+}%
+\foreach \level in {0,...,5}{%
+\tikzset{
+    l-system={step=\trianglewidth/(2^\level), order=\level, angle=-120}
+}%
+\begin{tikzpicture}
+    \fill [black] (0,0) -- ++(0:\trianglewidth) -- ++(120:\trianglewidth) -- cycle;
+    \draw [draw=none] (0,0) l-system
+    [l-system={Iterated triangle, axiom=X},fill=white];
+\end{tikzpicture}
+}%
+\end{verbatim}
+
+% \bibliographystyle{plain}                                     % for bibtex
+% \bibliography{/Users/chrberrig/Documents/LaTeX/bib.bib}       % for bibtex
+\printbibliography      % for biblatex
+
+\end{document}

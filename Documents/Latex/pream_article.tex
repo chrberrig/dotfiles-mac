@@ -1,0 +1,49 @@
+\documentclass[a4paper,twoside]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{natbib}            % for bibtex
+\usepackage[style=phys]{biblatex}                       % for biblatex
+\bibliography{/Users/chrberrig/Documents/LaTeX/bib.bib} % for biblatex
+\usepackage[affil-it]{authblk}	% for author affiliations
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{physics}
+%\usepackage[danish]{babel} 
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[rmargin=2.7cm,lmargin=2.7cm,bmargin=2.5cm,tmargin=2.5cm]{geometry}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{tkz-euclide} %for euclidian constructions in Tikz. 
+\usepackage{pgfplots}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\newcommand{\mtx}[1]{\underline{\underline{\textbf{#1}}}}
+\newcommand{\diff}[2]{\dfrac{d #1}{d #2}}
+\newcommand{\pdiff}[2]{\dfrac{\partial #1}{\partial #2}}
+
+\title{}
+% the following fields only works in: % from https://en.wikibooks.org/wiki/LaTeX/Title_Creation
+% $\documentclass{scrbook}
+% \subtitle{}
+% \subject{}
+\author[1]{Christian Berrig%
+\thanks{Electronic address: \texttt{chrber@fysik.dtu.dk}; }}
+\affil[1]{BigQ, QPIT, DTU}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+<0>
+
+
+% \bibliographystyle{plain}                                     % for bibtex
+% \bibliography{/Users/chrberrig/Documents/LaTeX/bib.bib}       % for bibtex
+\printbibliography      % for biblatex
+
+\end{document}
